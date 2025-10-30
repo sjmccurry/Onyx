@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<body>
+<button id="go">Test Proxy</button>
+<pre id="out"></pre>
+<script>
+const API = "https://<your-loca.lt-subdomain>.loca.lt/proxy/";
+const auth = "Basic " + btoa("user:pass");
+document.getElementById("go").onclick = () => {
+  fetch(API, { headers: { Authorization: auth }})
+    .then(r => r.text())
+    .then(t => document.getElementById("out").textContent = t.slice(0,500))
+    .catch(e => document.getElementById("out").textContent = e.toString());
+};
+</script>
+</body>
+</html>
