@@ -1,17 +1,46 @@
 <!doctype html>
 <html>
+<head>
+  <meta charset="utf-8" />
+  <title>Test</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:system-ui,Arial,sans-serif;margin:20px}
+    .row{margin:10px 0}
+    #out{white-space:pre-wrap;border:1px solid #ccc;padding:10px;height:280px;overflow:auto}
+    iframe{border:1px solid #ccc;width:100%;height:70vh}
+  </style>
+</head>
 <body>
-<button id="go">Test Proxy</button>
-<pre id="out"></pre>
-<script>
-const API = "https://poor-boxes-shake.loca.lt/proxy/";
-const auth = "Basic " + btoa("user:pass");
-document.getElementById("go").onclick = () => {
-  fetch(API, { headers: { Authorization: auth }})
-    .then(r => r.text())
-    .then(t => document.getElementById("out").textContent = t.slice(0,500))
-    .catch(e => document.getElementById("out").textContent = e.toString());
-};
-</script>
+  <h2>Proxy Tester</h2>
+
+  <div class="row">
+    <label>Target path to fetch (goes after <code>/proxy</code>):</label>
+    <input id="path" value="/" style="width:260px">
+    <button id="go">Fetch via Proxy</button>
+  </div>
+
+  <div id="out">(results appear here)</div>
+
+  <h3 style="margin-top:24px">Live Preview (iframe)</h3>
+  <p>If this is blank or prompts for auth, that’s normal—use the Fetch button above for API/HTML testing.</p>
+  <iframe id="preview" src="https://swift-colts-pick.loca.lt/"></iframe>
+
+  <script>
+    const API_BASE = "https://swift-colts-pick.loca.lt/proxy";
+    const auth = "Basic " + btoa("user:pass");
+
+    document.getElementById("go").onclick = async () => {
+      const p = document.getElementById("path").value || "/";
+      document.getElementById("out").textContent = "Loading...";
+      try {
+        const r = await fetch(API_BASE + p, { headers: { Authorization: auth }});
+        const text = await r.text();
+        document.getElementById("out").textContent = text.slice(0, 5000);
+      } catch (e) {
+        document.getElementById("out").textContent = "Error: " + e;
+      }
+    };
+  </script>
 </body>
 </html>
