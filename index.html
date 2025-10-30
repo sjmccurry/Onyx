@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Open via Proxy</title>
+  <title>Onyx Proxy</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     body {
@@ -12,33 +12,38 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
-      background: #fafafa;
+      background: #0f0f0f;
+      color: #f1f1f1;
     }
+    h2 { margin-bottom: 24px; }
     input {
       width: 80%;
       max-width: 480px;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       border-radius: 6px;
       outline: none;
+      background: #1a1a1a;
+      color: #eee;
     }
     button {
-      margin-top: 12px;
-      padding: 10px 24px;
+      margin-top: 14px;
+      padding: 10px 28px;
       font-size: 16px;
       border: none;
       border-radius: 6px;
-      background: #333;
-      color: #fff;
+      background: #3b82f6;
+      color: white;
       cursor: pointer;
+      transition: background 0.2s;
     }
-    button:hover { background: #555; }
+    button:hover { background: #2563eb; }
   </style>
 </head>
 <body>
-  <h2>Open via Proxy</h2>
-  <input id="url" type="text" placeholder="Enter path or full URL (e.g. https://example.com)">
+  <h2>Onyx Proxy</h2>
+  <input id="url" type="text" placeholder="Enter path or full URL (e.g. /, /about, https://example.com)">
   <button id="go">Go</button>
 
   <script>
@@ -48,11 +53,15 @@
     document.getElementById("go").onclick = async () => {
       let input = document.getElementById("url").value.trim();
       if (!input) return alert("Enter a URL or path");
-      if (!input.startsWith("http")) input = PROXY_BASE + (input.startsWith("/") ? input : "/" + input);
+
+
+      const target = input.startsWith("http")
+        ? PROXY_BASE + "?url=" + encodeURIComponent(input)
+        : PROXY_BASE + (input.startsWith("/") ? input : "/" + input);
 
       const newTab = window.open();
       try {
-        const r = await fetch(input, { headers: { Authorization: AUTH }});
+        const r = await fetch(target, { headers: { Authorization: AUTH }});
         const html = await r.text();
         newTab.document.write(html);
       } catch (e) {
